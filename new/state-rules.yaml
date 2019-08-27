@@ -1,0 +1,31 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  labels:
+    prometheus: k8s
+    role: alert-rules
+  name: state-rules
+  namespace: monitoring
+spec:
+  groups:
+  - name: service_status
+    rules:
+    - alert: 主机状态
+      expr: up == 0
+      for: 30s
+      labels:
+        severity: Erroring
+      annotations:
+        summary: "{{$labels.instance}}:服务关闭"
+        description: "{{$labels.instance}}:服务关闭"
+  - name: test-metrics
+    rules:
+    - alert: test-metrics
+      expr: wyf == 0
+      for: 30s
+      labels:
+        severity: Erroring
+      annotations:
+        summary: "{{$labels.instance}}:测试服务"
+        description: "{{$labels.instance}}:测试服务"
+    

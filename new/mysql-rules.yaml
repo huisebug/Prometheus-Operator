@@ -1,0 +1,31 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  labels:
+    prometheus: k8s
+    role: alert-rules
+  name: prometheus-k8s-rules
+  namespace: monitoring
+spec:
+  groups:
+  - name: mysql_service_status
+    rules:
+    - alert: mysql当前线程正在运行连接数超出500
+      expr: mysql_global_status_threads_running{job="mysql"} > 500
+      for: 30s
+      labels:
+        severity: warning
+      annotations:
+        summary: "mysql当前线程正在运行连接数超出500"
+        description: "mysql当前线程正在运行连接数为{{ $value }}"
+    - alert: mysql是否正在运行
+      expr: mysql_up{job="mysql-exporter-prometheus-mysql-exporter"} == 0
+      for: 30s
+      labels:
+        severity: erroring
+      annotations:
+        summary: "mysql服务停止"
+        description: "mysql服务停止"
+        
+        
+        
